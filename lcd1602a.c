@@ -1,5 +1,5 @@
 #include "stdint.h"
-#include "lib1602a.h"
+#include "lcd1602a.h"
 
                
 /*1602A  字符(共80个)  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  ...不可见 */
@@ -175,7 +175,7 @@ static lib1602a_status_t lib1602a_entry_mode(lib1602a_addr_dir_t addr_dir,lib160
  LIB1602A_REG_ENABLE();
  LIB1602A_WRITE_ENABLE();
  LIB1602A_CHIP_DISABLE();
-
+ driver->io_delay_ms(1);
  icode=0;
 
  switch(addr_dir)
@@ -198,6 +198,7 @@ static lib1602a_status_t lib1602a_entry_mode(lib1602a_addr_dir_t addr_dir,lib160
  }
 
  driver->io_data_out(icode|LIB1602A_ADDR_CTRL_I_CODE);
+ driver->io_delay_ms(1);
  LIB1602A_CHIP_ENABLE();
  driver->io_delay_ms(1);
  
@@ -215,13 +216,15 @@ static lib1602a_status_t lib1602a_set_default_function(void)
  LIB1602A_REG_ENABLE();
  LIB1602A_WRITE_ENABLE();
  LIB1602A_CHIP_DISABLE();
+ driver->io_delay_ms(1);
  
  icode=0;
  icode|=(LIB1602A_FUNCTION_DATA8<<LIB1602A_FUNCTION_DATA_CTRL_BIT_POS)|(LIB1602A_FUNCTION_LINE_2<<LIB1602A_FUNCTION_LINE_CTRL_BIT_POS)|(LIB1602A_FUNCTION_FONT_5X8<<LIB1602A_FUNCTION_FONT_CTRL_BIT_POS);
  driver->io_data_out(icode|LIB1602A_FUNCTION_CTRL_I_CODE);
+
+ driver->io_delay_ms(1);
  LIB1602A_CHIP_ENABLE();
  driver->io_delay_ms(1);
- 
  return LIB1602A_STATUS_OK;
 }
 
@@ -236,6 +239,7 @@ return  LIB1602A_STATUS_ERR;
 LIB1602A_WRITE_ENABLE();
 LIB1602A_REG_ENABLE();
 LIB1602A_CHIP_DISABLE();
+driver->io_delay_ms(1);
 /*display cursor*/
 icode=0;
 if(screen == LIB1602A_SCREEN_DISPLAY_ON)
@@ -255,6 +259,7 @@ icode|=(LIB1602A_CURSOR_NO_BLINK<<LIB1602A_CURSOR_BLINK_CTRL_BIT_POS);
 
 
 driver->io_data_out(icode|LIB1602A_DISPLAY_ON_OFF_CTRL_I_CODE);
+driver->io_delay_ms(1);
 LIB1602A_CHIP_ENABLE();
 driver->io_delay_ms(1);
 
@@ -288,11 +293,13 @@ lib1602a_status_t lib1602a_scroll_screen_left(void)
  LIB1602A_WRITE_ENABLE();
  LIB1602A_REG_ENABLE();
  LIB1602A_CHIP_DISABLE();
+ driver->io_delay_ms(1);
  
  icode=0;
  icode|=(LIB1602A_CS_SELECT_SCREEN_SHIFT<<LIB1602A_CS_SELECT_CTRL_BIT_POS)|(LIB1602A_CS_DIR_LEFT<<LIB1602A_CS_DIR_CTRL_BIT_POS);
  
  driver->io_data_out(icode|LIB1602A_CS_CTRL_I_CODE);
+ driver->io_delay_ms(1);
  LIB1602A_CHIP_ENABLE();
  driver->io_delay_ms(1);
 
@@ -310,11 +317,13 @@ lib1602a_status_t lib1602a_scroll_screen_right(void)
  LIB1602A_WRITE_ENABLE();
  LIB1602A_REG_ENABLE();
  LIB1602A_CHIP_DISABLE();
-	
+ driver->io_delay_ms(1);
+ 
  icode=0;
  icode|=(LIB1602A_CS_SELECT_SCREEN_SHIFT<<LIB1602A_CS_SELECT_CTRL_BIT_POS)|(LIB1602A_CS_DIR_RIGHT<<LIB1602A_CS_DIR_CTRL_BIT_POS);
 	
  driver->io_data_out(icode|LIB1602A_CS_CTRL_I_CODE);
+ driver->io_delay_ms(1);
  LIB1602A_CHIP_ENABLE();
  driver->io_delay_ms(1);
 	
@@ -333,9 +342,10 @@ lib1602a_status_t lib1602a_clear_screen(void)
 	LIB1602A_WRITE_ENABLE();
 	LIB1602A_REG_ENABLE();
     LIB1602A_CHIP_DISABLE();
-	   
+	driver->io_delay_ms(1);   
 	icode=0;   
 	driver->io_data_out(icode|LIB1602A_CLEAR_SCREEN_I_CODE);
+    driver->io_delay_ms(1);
 	LIB1602A_CHIP_ENABLE();
 	driver->io_delay_ms(3);
 	   
@@ -353,11 +363,13 @@ lib1602a_status_t lib1602a_move_cursor_left(void)
 	LIB1602A_WRITE_ENABLE();
 	LIB1602A_REG_ENABLE();
 	LIB1602A_CHIP_DISABLE();
+    driver->io_delay_ms(1);
     
 	icode=0;
 	icode|=(LIB1602A_CS_SELECT_CURSOR<<LIB1602A_CS_SELECT_CTRL_BIT_POS)|(LIB1602A_CS_DIR_LEFT<<LIB1602A_CS_DIR_CTRL_BIT_POS);
 	   
 	driver->io_data_out(icode|LIB1602A_CS_CTRL_I_CODE);
+    driver->io_delay_ms(1);
 	LIB1602A_CHIP_ENABLE();
 	driver->io_delay_ms(1);
 	   
@@ -374,11 +386,12 @@ lib1602a_status_t lib1602a_move_cursor_right(void)
 	LIB1602A_WRITE_ENABLE();
 	LIB1602A_REG_ENABLE();
     LIB1602A_CHIP_DISABLE();
-	   
+    driver->io_delay_ms(1);   
 	icode=0;
 	icode|=(LIB1602A_CS_SELECT_CURSOR<<LIB1602A_CS_SELECT_CTRL_BIT_POS)|(LIB1602A_CS_DIR_RIGHT<<LIB1602A_CS_DIR_CTRL_BIT_POS);
 	   
 	driver->io_data_out(icode|LIB1602A_CS_CTRL_I_CODE);
+    driver->io_delay_ms(1);
 	LIB1602A_CHIP_ENABLE();
 	driver->io_delay_ms(1);
 	   
@@ -399,6 +412,7 @@ lib1602a_status_t lib1602a_set_cursor_pos(lib1602a_pos_line_t line ,uint8_t x)
 	LIB1602A_WRITE_ENABLE();
 	LIB1602A_REG_ENABLE();
     LIB1602A_CHIP_DISABLE();
+    driver->io_delay_ms(1);
     
     if(line == LIB1602A_POS_LINE_1)
 	ddram_addr=x;
@@ -408,6 +422,7 @@ lib1602a_status_t lib1602a_set_cursor_pos(lib1602a_pos_line_t line ,uint8_t x)
 	icode=0;
 	icode|=(ddram_addr & LIB1602A_DDRAM_ADDR_CTRL_MASK);
 	driver->io_data_out(icode|LIB1602A_DDRAM_ADDR_CTRL_I_CODE);
+    driver->io_delay_ms(1);
 	LIB1602A_CHIP_ENABLE();
 	driver->io_delay_ms(1);
 	   
@@ -427,7 +442,7 @@ lib1602a_status_t lib1602a_display_str(const char *ptr_str,lib1602a_pos_line_t l
 
 	LIB1602A_WRITE_ENABLE();
 	LIB1602A_RAM_ENABLE();
-
+    driver->io_delay_ms(1);
 	while(*ptr_str!='\0')
 	{
     LIB1602A_CHIP_DISABLE();
